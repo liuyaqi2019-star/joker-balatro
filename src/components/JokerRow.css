@@ -7,23 +7,25 @@
 .jokerStrip {
   display: flex;
   gap: 10px;
-  overflow-x: auto;
   padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
 }
 
-.jokerCardWrap {
-  min-width: 170px;
-  flex: 0 0 auto;
+.jokerStack {
+  position: relative;
+  height: 56px;
+  width: 100%;
 }
 
 .jokerEmptySlot {
-  min-width: 170px;
-  height: 148px;
-  flex: 0 0 auto;
-  border-radius: 18px;
+  width: 88px;
+  height: 56px;
+  border-radius: 14px;
   border: 1px dashed rgba(255, 255, 255, 0.18);
   background: rgba(0, 0, 0, 0.12);
+  position: absolute;
+  left: calc((var(--joker-i, 0) + 1) * 14px);
+  top: 0;
+  pointer-events: none;
 }
 
 .jokerLogs {
@@ -32,14 +34,132 @@
   gap: 6px;
 }
 
-.jokerRow--compact .jokerCardWrap {
-  min-width: 132px;
+.jokerStackCard {
+  position: absolute;
+  left: calc(var(--joker-i) * 14px);
+  top: 0;
+  width: 132px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.06) 100%);
+  color: var(--text);
+  text-align: left;
+  padding: 10px 10px 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
-.jokerRow--compact .jokerEmptySlot {
-  min-width: 132px;
-  height: 110px;
+.jokerStackCard:active {
+  transform: translateY(1px);
+}
+
+.jokerStackBadge {
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-weight: 950;
+  font-size: 12px;
+  color: var(--gold);
+  flex: 0 0 auto;
+}
+
+.jokerStackTitle {
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jokerRow--compact .jokerStack {
+  height: 52px;
+}
+
+.jokerRow--compact .jokerStackCard {
+  height: 52px;
+  width: 120px;
+}
+
+.jokerModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  padding: 16px 12px;
+}
+
+.jokerModalBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: 0;
+}
+
+.jokerModal {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 92vw);
   border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(16, 18, 33, 0.98) 0%, rgba(11, 12, 18, 0.98) 100%);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  padding: 12px;
+}
+
+.jokerModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.jokerModalTitle {
+  font-weight: 950;
+  letter-spacing: 0.2px;
+}
+
+.jokerModalClose {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.jokerModalBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.jokerModalDesc {
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.jokerModalName {
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+
+.jokerModalText {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.3;
 }
 
 .jokerLog {

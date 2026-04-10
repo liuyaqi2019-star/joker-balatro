@@ -90,7 +90,8 @@
   position: relative;
   touch-action: none;
   height: clamp(260px, 38svh, 330px);
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
 }
 
 .handFan {
@@ -98,7 +99,8 @@
   left: 50%;
   bottom: 42px;
   transform: translateX(-50%);
-  width: min(430px, 100%);
+  width: 100%;
+  max-width: 520px;
   height: calc(100% - 54px);
 }
 
