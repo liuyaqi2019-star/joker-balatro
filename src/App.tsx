@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 
 import type { Suit } from './engine/pokerHands';
@@ -69,6 +69,9 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [settings, setSettings] = useState<Settings>(() => loadSettings());
+  const [viewportWidth, setViewportWidth] = useState<number>(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 390,
+  );
   const hand = store.state.hand;
   const selected = useMemo(() => new Set(store.ui.selectedIds), [store.ui.selectedIds]);
   const [dealTick, setDealTick] = useState(0);
@@ -114,17 +117,24 @@ export default function App() {
     return arr;
   }, [hand, settings.sortMode]);
 
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', onResize, { passive: true } as any);
+    return () => window.removeEventListener('resize', onResize as any);
+  }, []);
+
   const fanLayout = useMemo(() => {
     const n = displayHand.length;
-    const maxAngle = 22;
+    // Make hand fan adapt to screen width (mobile-first).
+    const maxAngle = clamp(16 + viewportWidth / 70, 18, 24);
     const angles = displayHand.map((_, i) => {
       const t = n <= 1 ? 0 : i / (n - 1);
       return (t - 0.5) * 2 * maxAngle;
     });
-    const spread = clamp(18 + n * 2.5, 24, 36);
+    const spread = clamp(viewportWidth * 0.045 + n * 2.0, 22, 40);
     const lifts = displayHand.map((c) => (selected.has(c.id) ? -18 : 0));
     return { angles, spread, lifts };
-  }, [displayHand, selected]);
+  }, [displayHand, selected, viewportWidth]);
 
   const onCardPointerDown = useCallback(
     (e: React.PointerEvent, cardId: string) => {
