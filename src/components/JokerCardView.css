@@ -1,41 +1,57 @@
 .jokerCardView {
-  --joker-accent: #ffd166;
+  --joker-accent: #f0c975;
   width: 100%;
   height: 148px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--rLg, 26px);
+  border: 2px solid var(--stroke2, rgba(120, 100, 130, 0.22));
   background:
-    radial-gradient(240px 160px at 20% 0%, rgba(255, 255, 255, 0.16) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    radial-gradient(ellipse 140% 90% at 18% 0%, color-mix(in srgb, var(--joker-accent) 28%, white) 0%, transparent 58%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 246, 252, 0.92) 100%);
   color: var(--text);
   text-align: left;
-  padding: 10px 12px 12px;
+  padding: 12px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  box-shadow:
+    0 8px 22px rgba(160, 140, 180, 0.12),
+    0 2px 8px rgba(150, 130, 160, 0.06),
+    inset 0 2px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.12s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
-/* Compact mode for persistent joker row */
+.jokerCardView:hover:not(.jokerCardView--disabled) {
+  border-color: color-mix(in srgb, var(--joker-accent) 40%, var(--stroke2));
+  box-shadow:
+    0 12px 28px rgba(240, 200, 160, 0.18),
+    0 4px 12px rgba(180, 170, 210, 0.1),
+    inset 0 2px 0 rgba(255, 255, 255, 1);
+}
+
+.jokerCardView:active:not(.jokerCardView--disabled) {
+  transform: translateY(1px);
+}
+
 .jokerRow--compact .jokerCardView {
   height: 110px;
-  border-radius: 16px;
-  padding: 8px 10px 10px;
+  border-radius: var(--rMd, 20px);
+  padding: 9px 11px 11px;
   gap: 8px;
 }
 
 .jokerRow--compact .jokerBadge {
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
   font-size: 12px;
 }
 
 .jokerRow--compact .jokerPrice {
   font-size: 11px;
-  padding: 5px 8px;
+  padding: 6px 9px;
 }
 
 .jokerRow--compact .jokerTitle {
@@ -51,9 +67,10 @@
   content: '';
   position: absolute;
   inset: -40px;
-  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--joker-accent) 55%, transparent) 0%, transparent 60%);
-  opacity: 0.8;
+  background: radial-gradient(circle at 28% 28%, color-mix(in srgb, var(--joker-accent) 35%, transparent) 0%, transparent 62%);
+  opacity: 0.45;
   transform: rotate(-8deg);
+  pointer-events: none;
 }
 
 .jokerCardView > * {
@@ -63,6 +80,8 @@
 .jokerCardView--disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  filter: saturate(0.75);
+  border-style: dashed;
 }
 
 .jokerTop {
@@ -73,49 +92,50 @@
 }
 
 .jokerBadge {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
   display: grid;
   place-items: center;
-  background: rgba(0, 0, 0, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  font-weight: 950;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid var(--stroke);
+  font-weight: 800;
   letter-spacing: 0.2px;
-  color: var(--joker-accent);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  color: var(--goldDim);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .jokerPrice {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
-  background: rgba(0, 0, 0, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 6px 10px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  border: 2px solid color-mix(in srgb, var(--gold) 35%, var(--stroke));
+  padding: 7px 11px;
   border-radius: 999px;
+  font-weight: 700;
 }
 
 .jokerPrice strong {
-  color: var(--gold);
+  color: var(--goldDim);
 }
 
 .jokerTitle {
-  font-weight: 950;
-  letter-spacing: 0.25px;
-  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 12px;
 }
 
 .jokerDesc {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.25;
+  color: var(--muted);
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Decorative patterns */
 .patternSmile::after,
 .patternChip::after,
 .patternPair::after,
@@ -131,10 +151,10 @@
   transform: rotate(12deg);
   background: repeating-linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.2) 0px,
-    rgba(255, 255, 255, 0.2) 8px,
-    rgba(255, 255, 255, 0.05) 8px,
-    rgba(255, 255, 255, 0.05) 16px
+    rgba(200, 180, 220, 0.35) 0px,
+    rgba(200, 180, 220, 0.35) 8px,
+    rgba(255, 255, 255, 0.15) 8px,
+    rgba(255, 255, 255, 0.15) 16px
   );
   mask-size: contain;
   mask-repeat: no-repeat;
@@ -167,4 +187,3 @@
   mask-image: linear-gradient(135deg, #000 0 20%, transparent 20% 100%),
     linear-gradient(0deg, #000 0 18%, transparent 18% 100%);
 }
-

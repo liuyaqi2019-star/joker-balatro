@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
+import brandIcon from './assets/brand-icon.svg';
 
 import type { Suit } from './engine/pokerHands';
 import { scoreWithJokers } from './engine/score';
@@ -58,6 +59,14 @@ function suitOrder(s: Suit): number {
     case 'C':
       return 3;
   }
+}
+
+function BrandMark() {
+  return (
+    <span className="brandMark" aria-hidden>
+      <img src={brandIcon} alt="" className="brandMarkImg" width={30} height={30} decoding="async" />
+    </span>
+  );
 }
 
 export default function App() {
@@ -242,9 +251,15 @@ export default function App() {
   if (view === 'home') {
     return (
       <div className="app appHome">
+        <div className="homeBgDecor" aria-hidden />
         <div className="homeCard">
-          <div className="homeTitle">小丑牌（原型）</div>
-          <div className="homeSub">手机端：点选出牌 · 小丑加成 · 商店</div>
+          <div className="brandRow">
+            <BrandMark />
+            <div>
+              <div className="homeTitle">小丑牌</div>
+              <div className="homeSub">Balatro 风 · 点选出牌 · 小丑 · 商店</div>
+            </div>
+          </div>
 
           <div className="homeButtons">
             <button type="button" className="btn btnPrimary" onClick={startNewGame}>
@@ -371,23 +386,7 @@ export default function App() {
         ) : null}
 
         {toast ? (
-          <div
-            style={{
-              position: 'fixed',
-              left: '50%',
-              bottom: 18,
-              transform: 'translateX(-50%)',
-              background: 'rgba(0,0,0,0.72)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              color: 'rgba(255,255,255,0.92)',
-              padding: '10px 12px',
-              borderRadius: 12,
-              fontSize: 13,
-              zIndex: 999,
-              maxWidth: '92vw',
-            }}
-            role="status"
-          >
+          <div className="toast" role="status">
             {toast}
           </div>
         ) : null}
@@ -399,50 +398,89 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="titleBlock">
-          <h1 className="h1">小丑牌（原型）</h1>
-          <div className="sub">手机端手感优先：扇形手牌 + 点选/拖拽骨架</div>
+          <div className="brandRow">
+            <BrandMark />
+            <div>
+              <h1 className="h1">小丑牌</h1>
+              <div className="sub">Balatro 风 · 点选出牌</div>
+            </div>
+          </div>
         </div>
         <div className="pillRow">
-          <button type="button" className="pill" onClick={() => setView('home')}>
+          <button type="button" className="pill pillBtn" onClick={() => setView('home')}>
             首页
           </button>
-          <button type="button" className="pill" onClick={() => setSettingsOpen(true)}>
+          <button type="button" className="pill pillBtn" onClick={() => setSettingsOpen(true)}>
             设置
           </button>
-          <div className="pill">
-            阶段 <strong>{store.state.phase === 'Blind' ? '盲注' : '商店'}</strong>
+          <div className="pill pillStat">
+            <span className="pillLabel">阶段</span>
+            <strong>
+              {store.state.phase === 'Blind'
+                ? '盲注'
+                : store.state.phase === 'RoundWon'
+                  ? '通关'
+                  : '商店'}
+            </strong>
           </div>
-          <div className="pill">
-            选中 <strong>{selectionCount}</strong>
+          <div className="pill pillStat">
+            <span className="pillLabel">选中</span>
+            <strong>{selectionCount}</strong>
           </div>
-          <div className="pill">
-            盲注 <strong>{store.state.blind.kind}</strong>
+          <div className="pill pillStat">
+            <span className="pillLabel">盲注</span>
+            <strong>{store.state.blind.kind}</strong>
           </div>
-          <div className="pill">
-            总分 <strong>{store.state.runScoreTotal}</strong>
+          <div className="pill pillStat pillStatGold">
+            <span className="pillLabel">总分</span>
+            <strong>{store.state.runScoreTotal}</strong>
+          </div>
+          <div className="pill pillStat pillStatGold">
+            <span className="pillLabel">¥</span>
+            <strong>{store.state.money}</strong>
           </div>
         </div>
       </header>
 
       {toast ? (
-        <div
-          style={{
-            position: 'fixed',
-            left: '50%',
-            bottom: 18,
-            transform: 'translateX(-50%)',
-            background: 'rgba(0,0,0,0.72)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            color: 'rgba(255,255,255,0.92)',
-            padding: '10px 12px',
-            borderRadius: 12,
-            fontSize: 13,
-            zIndex: 999,
-            maxWidth: '92vw',
-          }}
-          role="status"
-        >
+        <div className="toast" role="status">
           {toast}
+        </div>
+      ) : null}
+
+      {store.state.phase === 'RoundWon' ? (
+        <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="本轮通关">
+          <div className="modal modal--roundWin">
+            <div className="modalHeader">
+              <div className="modalTitle">本轮通关</div>
+            </div>
+            <div className="modalBody">
+              <p className="roundWinLead">
+                已达到本盲注目标分数，干得漂亮！
+              </p>
+              <div className="roundWinStats">
+                <span>
+                  得分{' '}
+                  <strong>
+                    {store.state.blind.scoreSoFar}/{store.state.blind.targetScore}
+                  </strong>
+                </span>
+                <span>
+                  当前金币 <strong>¥{store.state.money}</strong>
+                  <span className="roundWinBonus">（通关 +2）</span>
+                </span>
+              </div>
+              <p className="hint roundWinHint">点击下方按钮进入商店，选购小丑牌强化你的构筑。</p>
+              <button
+                type="button"
+                className="btn btnPrimary roundWinCta"
+                onClick={() => dispatch({ type: 'EnterShop' })}
+              >
+                进入商店
+              </button>
+            </div>
+          </div>
+          <div className="modalBackdrop modalBackdrop--inert" aria-hidden />
         </div>
       ) : null}
 
@@ -467,23 +505,25 @@ export default function App() {
             </div>
           </div>
           {breakdown ? (
-            <div className="hint" style={{ marginTop: 6 }}>
+            <div className="scoreFormula">
               基础：{breakdown.base.handType} · {breakdown.base.chipsFinal} × {breakdown.base.multFinal}
-              {'  '}
+              {' · '}
               结算：{breakdown.final.chipsFinal} × {breakdown.final.multFinal} = {breakdown.final.score}
             </div>
           ) : (
-            <div className="hint" style={{ marginTop: 6 }}>
+            <div className="scoreFormula">
               base____ * Mult____ = _______
             </div>
           )}
           {store.state.lastScoreText ? (
-            <div className="hint" style={{ marginTop: 6 }}>
+            <div className="hint">
               本次：{store.state.lastScoreText}
-              {store.state.phase === 'Shop' ? '（已达标，进入商店）' : null}
+              {store.state.phase === 'Shop' || store.state.phase === 'RoundWon'
+                ? '（已达标，可进商店）'
+                : null}
             </div>
           ) : null}
-          <div className="hint" style={{ marginTop: 6 }}>
+          <div className="hint">
             本轮：出牌 {store.state.handsLeft} · 弃牌 {store.state.discardsLeft} · 金币 {store.state.money} · 选中 {selectedCards.length}/5
           </div>
         </section>
@@ -497,10 +537,12 @@ export default function App() {
         </section>
 
         <section className="panel handArea" aria-label="手牌区域">
-          <div className="zoneTitle" style={{ marginBottom: 0 }}>
+          <div className="zoneTitle">
             <h2>手牌</h2>
             <div className="hint">
-              点击选中；点「出牌 / 弃牌」即可
+              {store.state.phase === 'RoundWon'
+                ? '本轮已通关，请在通关提示中点「进入商店」'
+                : '点击选中；点「出牌 / 弃牌」即可'}
             </div>
           </div>
 
@@ -524,16 +566,12 @@ export default function App() {
                   aria-pressed={sel}
                   aria-label={`手牌 ${c.rank}${suitSymbol(c.suit)}`}
                 >
-                  <div className="card">
+                  <div className={`card ${isRed(c.suit) ? 'card--red' : 'card--black'}`}>
                     <div className="cardCorner">
                       <span className="rank">{c.rank}</span>
-                      <span className="suit" style={{ color: isRed(c.suit) ? '#c62828' : '#111' }}>
-                        {suitSymbol(c.suit)}
-                      </span>
+                      <span className="suit">{suitSymbol(c.suit)}</span>
                     </div>
-                    <div className="centerPip" style={{ color: isRed(c.suit) ? '#c62828' : '#111' }}>
-                      {suitSymbol(c.suit)}
-                    </div>
+                    <div className="centerPip">{suitSymbol(c.suit)}</div>
                   </div>
                 </div>
               );

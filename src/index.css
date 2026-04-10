@@ -1,22 +1,82 @@
-/* Mobile-first baseline for the game */
-:root {
-  --bg0: #0b0c12;
-  --bg1: #101221;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel2: rgba(255, 255, 255, 0.09);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.62);
-  --gold: #ffc857;
-  --accent: #c084fc;
+/* 治愈系马卡龙 — 明亮通透、低饱和、柔和线条（仅视觉变量与全局底图） */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap');
 
-  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
-    sans-serif;
-  font: 16px/1.35 var(--sans);
+:root {
+  /* 浅色治愈底 */
+  --cream: #fff9f4;
+  --cream2: #fef3eb;
+  --blossom: #ffe8ef;
+  --mint: #d4f0e4;
+  --sky: #d9efff;
+  --butter: #fff3d4;
+  --lavender: #ebe4ff;
+
+  --bgA: var(--cream);
+  --bgB: var(--cream2);
+  --bgC: #ffffff;
+
+  --panelGradTop: rgba(255, 255, 255, 0.92);
+  --panelGradBot: rgba(255, 250, 246, 0.88);
+  --panelGlass: rgba(255, 255, 255, 0.55);
+  --panelGlass2: rgba(255, 255, 255, 0.75);
+
+  --bg0: var(--bgA);
+  --bg1: var(--bgB);
+  --panel: var(--panelGlass);
+  --panel2: var(--panelGlass2);
+
+  --stroke: rgba(120, 100, 130, 0.14);
+  --stroke2: rgba(120, 100, 130, 0.22);
+  --border: var(--stroke);
+  --text: #4a4356;
+  --muted: rgba(74, 67, 86, 0.58);
+
+  --gold: #e5a84a;
+  --goldDim: #c98b3a;
+
+  --accent: #7ec9a9;
+  --accent2: #7eb8e8;
+  --neonCyan: var(--accent2);
+  --neonPurple: #b8a9e0;
+
+  --danger: #e87888;
+
+  --shadowSoft: 0 8px 28px rgba(160, 140, 160, 0.12), 0 2px 8px rgba(140, 120, 150, 0.06);
+  --shadowHard: 0 20px 48px rgba(150, 130, 160, 0.14), 0 8px 20px rgba(130, 110, 140, 0.08);
+  --glowGold: 0 0 24px rgba(229, 168, 74, 0.22);
+  --glowAccent: 0 0 28px rgba(126, 201, 169, 0.2);
+  --glowSky: 0 0 24px rgba(126, 184, 232, 0.18);
+  --glowPurple: 0 0 26px rgba(184, 169, 224, 0.2);
+
+  --rSm: 14px;
+  --rMd: 20px;
+  --rLg: 26px;
+  --rCard: 22px;
+  --space1: 10px;
+  --space2: 14px;
+  --space3: 20px;
+
+  --sans: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font: 16px/1.45 var(--sans);
   color: var(--text);
-  background: radial-gradient(1200px 700px at 20% -10%, #262a5a 0%, transparent 55%),
-    radial-gradient(900px 600px at 120% 0%, #3b155a 0%, transparent 50%),
-    linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
+  background-color: var(--bgA);
+  background-image:
+    radial-gradient(ellipse 900px 520px at 8% 12%, rgba(255, 232, 239, 0.85) 0%, transparent 55%),
+    radial-gradient(ellipse 800px 480px at 92% 8%, rgba(217, 239, 255, 0.75) 0%, transparent 52%),
+    radial-gradient(ellipse 700px 420px at 50% 100%, rgba(212, 240, 228, 0.55) 0%, transparent 50%),
+    radial-gradient(circle 120px at 18% 78%, rgba(255, 243, 212, 0.5) 0%, transparent 100%),
+    radial-gradient(circle 100px at 88% 72%, rgba(235, 228, 255, 0.45) 0%, transparent 100%),
+    repeating-radial-gradient(circle at 0 0, transparent 0, transparent 14px, rgba(255, 255, 255, 0.35) 14px 15px),
+    linear-gradient(180deg, var(--cream) 0%, var(--cream2) 45%, #fff5ef 100%);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    32px 32px,
+    100% 100%;
+  background-attachment: fixed;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -40,4 +100,20 @@ body {
 
 button {
   font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent2) 55%, white);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

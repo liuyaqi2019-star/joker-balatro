@@ -5,7 +5,7 @@ import { scoreWithJokers } from './score';
 
 export type BlindKind = 'Small' | 'Big' | 'Boss';
 
-export type GamePhase = 'Blind' | 'Shop';
+export type GamePhase = 'Blind' | 'RoundWon' | 'Shop';
 
 export type GameState = {
   seed: number;
@@ -29,6 +29,7 @@ export type Action =
   | { type: 'PlaySelected' }
   | { type: 'DiscardSelected' }
   | { type: 'ToShop' }
+  | { type: 'EnterShop' }
   | { type: 'StartNextBlind' }
   | { type: 'ShopBuyJoker'; jokerId: JokerInstance['id'] }
   | { type: 'ShopReroll' }
@@ -184,7 +185,7 @@ export function reducer(store: GameStore, action: Action): GameStore {
           discard: drawn.discard,
           hand: newHand,
           lastScoreText: `${scored.final.handType} +${scored.final.score}`,
-          phase: reached ? 'Shop' : 'Blind',
+          phase: reached ? 'RoundWon' : 'Blind',
           money: reached ? store.state.money + 2 : store.state.money,
         },
         ui: { selectedIds: [] },
@@ -263,6 +264,10 @@ export function reducer(store: GameStore, action: Action): GameStore {
         },
         ui: { selectedIds: [] },
       };
+    }
+    case 'EnterShop': {
+      if (store.state.phase !== 'RoundWon') return store;
+      return { ...store, state: { ...store.state, phase: 'Shop' } };
     }
     case 'ToShop':
       return { ...store, state: { ...store.state, phase: 'Shop' } };

@@ -1,45 +1,53 @@
 .jokerRow {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .jokerStrip {
   display: flex;
-  gap: 10px;
-  padding-bottom: 2px;
+  gap: 14px;
+  padding: 6px 6px 10px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .jokerCardWrap {
   flex: 0 0 auto;
-  width: 170px;
+  width: min(170px, calc((100vw - 48px) / 2.35));
+  scroll-snap-align: start;
 }
 
 .jokerEmptySlot {
   flex: 0 0 auto;
-  width: 170px;
+  width: min(170px, calc((100vw - 48px) / 2.35));
   height: 148px;
-  border-radius: 18px;
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.12);
+  border-radius: var(--rLg, 26px);
+  border: 2px dashed color-mix(in srgb, var(--accent2) 45%, var(--stroke));
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.jokerStrip::after {
+  content: '';
+  flex: 0 0 10px;
 }
 
 .jokerLogs {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .jokerRow--compact .jokerCardWrap {
-  width: 132px;
+  width: min(132px, calc((100vw - 40px) / 2.4));
 }
 
 .jokerRow--compact .jokerEmptySlot {
-  width: 132px;
+  width: min(132px, calc((100vw - 40px) / 2.4));
   height: 110px;
-  border-radius: 16px;
+  border-radius: var(--rMd, 20px);
 }
 
 .jokerModalOverlay {
@@ -54,7 +62,8 @@
 .jokerModalBackdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(90, 75, 95, 0.28);
+  backdrop-filter: blur(6px);
   border: 0;
 }
 
@@ -62,11 +71,13 @@
   position: relative;
   z-index: 1;
   width: min(520px, 92vw);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: linear-gradient(180deg, rgba(16, 18, 33, 0.98) 0%, rgba(11, 12, 18, 0.98) 100%);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
-  padding: 12px;
+  border-radius: var(--rLg, 26px);
+  border: 2px solid var(--stroke2, rgba(120, 100, 130, 0.22));
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%, rgba(212, 240, 228, 0.4) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 250, 246, 0.96) 100%);
+  box-shadow: var(--shadowHard, 0 20px 48px rgba(150, 130, 160, 0.14)), 0 0 32px rgba(184, 169, 224, 0.1);
+  padding: 14px 16px;
 }
 
 .jokerModalHeader {
@@ -74,66 +85,77 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .jokerModalTitle {
-  font-weight: 950;
-  letter-spacing: 0.2px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 14px;
+  color: var(--text);
 }
 
 .jokerModalClose {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--stroke, rgba(120, 100, 130, 0.14));
+  background: rgba(255, 255, 255, 0.88);
   color: var(--text);
-  padding: 8px 10px;
+  padding: 10px 16px;
   border-radius: 999px;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.jokerModalClose:hover {
+  border-color: color-mix(in srgb, var(--gold) 40%, var(--stroke));
+  background: rgba(255, 248, 235, 0.95);
 }
 
 .jokerModalBody {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .jokerModalDesc {
-  padding: 10px 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  padding: 12px 14px;
+  border-radius: var(--rMd, 20px);
+  border: 2px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .jokerModalName {
-  font-weight: 950;
-  margin-bottom: 6px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--goldDim);
 }
 
 .jokerModalText {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.3;
+  color: var(--text);
+  line-height: 1.45;
+  opacity: 0.9;
 }
 
 .jokerLog {
   display: flex;
   gap: 10px;
   align-items: baseline;
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  padding: 10px 12px;
+  border-radius: var(--rMd, 18px);
+  border: 2px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .jokerLogTitle {
-  font-weight: 900;
-  color: var(--gold);
+  font-weight: 800;
+  color: var(--goldDim);
   font-size: 12px;
   flex: 0 0 auto;
 }
 
 .jokerLogDetail {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
 }
-
