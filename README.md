@@ -72,3 +72,4 @@ export default defineConfig([
 ])
 ```
 # joker-balatro
+# joker-balatro
