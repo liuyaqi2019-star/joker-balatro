@@ -1,0 +1,66 @@
+.shop {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shopHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shopTitle {
+  font-weight: 900;
+  letter-spacing: 0.3px;
+}
+
+.shopSub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.shopMoney {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.shopItems {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 2px 12px 8px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 12px;
+}
+
+.shopItemWrap {
+  flex: 0 0 auto;
+  width: min(210px, calc((100vw - 12px * 2 - 12px * 2) / 3));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scroll-snap-align: start;
+}
+
+.shopItems::after {
+  content: '';
+  flex: 0 0 12px;
+}
+
+.shopActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.shopEmpty {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.62);
+}
+

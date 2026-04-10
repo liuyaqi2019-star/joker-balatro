@@ -1,0 +1,43 @@
+/* Mobile-first baseline for the game */
+:root {
+  --bg0: #0b0c12;
+  --bg1: #101221;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel2: rgba(255, 255, 255, 0.09);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.62);
+  --gold: #ffc857;
+  --accent: #c084fc;
+
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  font: 16px/1.35 var(--sans);
+  color: var(--text);
+  background: radial-gradient(1200px 700px at 20% -10%, #262a5a 0%, transparent 55%),
+    radial-gradient(900px 600px at 120% 0%, #3b155a 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+button {
+  font: inherit;
+}

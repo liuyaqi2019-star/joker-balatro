@@ -1,0 +1,216 @@
+.app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 12px 18px;
+  gap: 12px;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.pillRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.pill {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.pill strong {
+  color: var(--gold);
+}
+
+.panel {
+  background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.board {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zoneTitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.zoneTitle h2 {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.15px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.zoneTitle .hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.handArea {
+  padding: 14px 10px 10px;
+  position: relative;
+  touch-action: none;
+  height: 300px;
+  overflow: hidden;
+}
+
+.handFan {
+  position: absolute;
+  left: 50%;
+  bottom: 42px;
+  transform: translateX(-50%);
+  width: min(430px, 100%);
+  height: 260px;
+}
+
+.handButtons {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  z-index: 3;
+}
+
+.cardWrap {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  width: 86px;
+  height: 124px;
+  transform-origin: 50% 140%;
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    filter 180ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.cardWrapSelected {
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, #dcd7f2 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  color: #1a102b;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 8px 8px 10px;
+}
+
+.cardCorner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-weight: 800;
+}
+
+.rank {
+  font-size: 18px;
+}
+
+.suit {
+  font-size: 18px;
+}
+
+.centerPip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  opacity: 0.9;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn {
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: linear-gradient(180deg, rgba(255, 200, 87, 0.22) 0%, rgba(255, 200, 87, 0.08) 100%);
+  border-color: rgba(255, 200, 87, 0.35);
+}
+
+.btnDanger {
+  background: linear-gradient(180deg, rgba(255, 92, 92, 0.18) 0%, rgba(255, 92, 92, 0.06) 100%);
+  border-color: rgba(255, 92, 92, 0.28);
+}
+
+.dealAnim {
+  animation: dealIn 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+@keyframes dealIn {
+  from {
+    transform: translate(-50%, 40px) rotate(0deg) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

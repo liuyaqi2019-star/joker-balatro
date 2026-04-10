@@ -1,0 +1,170 @@
+.jokerCardView {
+  --joker-accent: #ffd166;
+  width: 100%;
+  height: 148px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    radial-gradient(240px 160px at 20% 0%, rgba(255, 255, 255, 0.16) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+  color: var(--text);
+  text-align: left;
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Compact mode for persistent joker row */
+.jokerRow--compact .jokerCardView {
+  height: 110px;
+  border-radius: 16px;
+  padding: 8px 10px 10px;
+  gap: 8px;
+}
+
+.jokerRow--compact .jokerBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.jokerRow--compact .jokerPrice {
+  font-size: 11px;
+  padding: 5px 8px;
+}
+
+.jokerRow--compact .jokerTitle {
+  font-size: 12px;
+}
+
+.jokerRow--compact .jokerDesc {
+  font-size: 11px;
+  -webkit-line-clamp: 2;
+}
+
+.jokerCardView::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--joker-accent) 55%, transparent) 0%, transparent 60%);
+  opacity: 0.8;
+  transform: rotate(-8deg);
+}
+
+.jokerCardView > * {
+  position: relative;
+}
+
+.jokerCardView--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jokerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.jokerBadge {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  color: var(--joker-accent);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.jokerPrice {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.jokerPrice strong {
+  color: var(--gold);
+}
+
+.jokerTitle {
+  font-weight: 950;
+  letter-spacing: 0.25px;
+  font-size: 13px;
+}
+
+.jokerDesc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Decorative patterns */
+.patternSmile::after,
+.patternChip::after,
+.patternPair::after,
+.patternHeart::after,
+.patternSeven::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  bottom: -18px;
+  width: 160px;
+  height: 120px;
+  opacity: 0.18;
+  transform: rotate(12deg);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 0px,
+    rgba(255, 255, 255, 0.2) 8px,
+    rgba(255, 255, 255, 0.05) 8px,
+    rgba(255, 255, 255, 0.05) 16px
+  );
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.patternSmile::after {
+  mask-image: radial-gradient(circle at 30% 35%, #000 0 10px, transparent 11px),
+    radial-gradient(circle at 70% 35%, #000 0 10px, transparent 11px),
+    radial-gradient(70px 40px at 50% 70%, transparent 0 26px, #000 27px 30px, transparent 31px);
+}
+
+.patternChip::after {
+  mask-image: radial-gradient(circle, #000 0 44px, transparent 45px),
+    radial-gradient(circle, transparent 0 28px, #000 29px 32px, transparent 33px);
+}
+
+.patternPair::after {
+  mask-image: radial-gradient(circle at 35% 50%, #000 0 40px, transparent 41px),
+    radial-gradient(circle at 65% 50%, #000 0 40px, transparent 41px);
+}
+
+.patternHeart::after {
+  mask-image: radial-gradient(circle at 40% 40%, #000 0 26px, transparent 27px),
+    radial-gradient(circle at 60% 40%, #000 0 26px, transparent 27px),
+    radial-gradient(40px 40px at 50% 65%, #000 0 40px, transparent 41px);
+}
+
+.patternSeven::after {
+  mask-image: linear-gradient(135deg, #000 0 20%, transparent 20% 100%),
+    linear-gradient(0deg, #000 0 18%, transparent 18% 100%);
+}
+
