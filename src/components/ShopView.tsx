@@ -38,6 +38,7 @@ export function ShopView({ store, onBuyJoker, onReroll, onLeave }: Props) {
                 disabled={!affordable}
                 onClick={() => onBuyJoker(it.jokerId)}
               />
+              {!affordable ? <div className="shopCantAfford">金币不足</div> : null}
             </div>
           );
         })}

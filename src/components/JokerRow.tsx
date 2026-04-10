@@ -19,26 +19,14 @@ export function JokerRow({ jokers, logs, maxSlots = 5, compact = false }: Props)
   return (
     <div className={`jokerRow ${compact ? 'jokerRow--compact' : ''}`} aria-label="小丑牌区域">
       <div className="jokerStrip" role="list" aria-label="小丑牌（点击查看）">
-        <div className="jokerStack" role="presentation">
-          {defs.map((d, idx) => (
-            <button
-              key={d.id}
-              type="button"
-              className="jokerStackCard"
-              style={{ ['--joker-i' as any]: idx }}
-              onClick={() => setOpenId(d.id)}
-              aria-label={`查看小丑牌：${d.name}`}
-            >
-              <span className="jokerStackBadge" aria-hidden>
-                {idx + 1}
-              </span>
-              <span className="jokerStackTitle">{d.name}</span>
-            </button>
-          ))}
-          {Array.from({ length: emptySlots }).map((_, i) => (
-            <div key={`empty-${i}`} className="jokerEmptySlot" aria-hidden />
-          ))}
-        </div>
+        {defs.map((d) => (
+          <div key={d.id} className="jokerCardWrap" role="listitem">
+            <JokerCardView def={d} onClick={() => setOpenId(d.id)} />
+          </div>
+        ))}
+        {Array.from({ length: emptySlots }).map((_, i) => (
+          <div key={`empty-${i}`} className="jokerEmptySlot" aria-hidden />
+        ))}
       </div>
 
       {openDef ? (

@@ -48,6 +48,16 @@
   scroll-snap-align: start;
 }
 
+.shopCantAfford {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.10);
+  border-radius: 999px;
+  padding: 6px 10px;
+  width: fit-content;
+}
+
 .shopItems::after {
   content: '';
   flex: 0 0 12px;

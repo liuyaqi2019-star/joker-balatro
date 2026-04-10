@@ -8,7 +8,7 @@ import { ShopView } from './components/ShopView';
 import type { GameStore } from './engine/reducer';
 import { newRun, reducer } from './engine/reducer';
 import { SettingsSheet } from './components/SettingsSheet';
-import { loadSettings, type Settings } from './lib/storage';
+import { loadSaves, loadSettings, type SaveSlot, type Settings } from './lib/storage';
 
 function suitSymbol(s: Suit): string {
   switch (s) {
@@ -62,6 +62,10 @@ function suitOrder(s: Suit): number {
 
 export default function App() {
   const [store, setStore] = useState<GameStore>(() => newRun(12345));
+  const [view, setView] = useState<'home' | 'game'>('home');
+  const [continueOpen, setContinueOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
+  const [saves, setSaves] = useState<SaveSlot[]>(() => loadSaves());
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [settings, setSettings] = useState<Settings>(() => loadSettings());
@@ -166,9 +170,27 @@ export default function App() {
     store.state.handsLeft > 0;
   const canDiscard = canInteract && selectionCount > 0 && store.state.discardsLeft > 0;
 
+  const isGameOver =
+    store.state.phase === 'Blind' &&
+    store.state.handsLeft <= 0 &&
+    store.state.blind.scoreSoFar < store.state.blind.targetScore;
+
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     window.setTimeout(() => setToast(null), 2200);
+  }, []);
+
+  const startNewGame = useCallback(() => {
+    const seed = (Date.now() >>> 0) ^ (store.state.seed * 2654435761);
+    setStore(newRun(seed));
+    setDealTick((t) => t + 1);
+    setView('game');
+  }, [store.state.seed]);
+
+  const startFromSeed = useCallback((seed: number) => {
+    setStore(newRun(seed >>> 0));
+    setDealTick((t) => t + 1);
+    setView('game');
   }, []);
 
   const handlePlayClick = useCallback(() => {
@@ -207,6 +229,162 @@ export default function App() {
   // (Currently not wired to a button, but useful for debugging.)
   void clearSelect;
 
+  if (view === 'home') {
+    return (
+      <div className="app appHome">
+        <div className="homeCard">
+          <div className="homeTitle">小丑牌（原型）</div>
+          <div className="homeSub">手机端：点选出牌 · 小丑加成 · 商店</div>
+
+          <div className="homeButtons">
+            <button type="button" className="btn btnPrimary" onClick={startNewGame}>
+              开启新游戏
+            </button>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setSaves(loadSaves());
+                setContinueOpen(true);
+              }}
+            >
+              继续（选择存档）
+            </button>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setRulesOpen(true);
+              }}
+            >
+              游戏规则介绍
+            </button>
+            <button
+              type="button"
+              className="btn btnDanger"
+              onClick={() => {
+                // Browsers generally disallow closing tabs not opened by script.
+                showToast('请使用浏览器的“返回/关闭标签页”退出');
+              }}
+            >
+              退出
+            </button>
+          </div>
+
+          <div className="homeHint">提示：你可以在“设置 → 存档槽”里保存 seed，然后在这里继续。</div>
+        </div>
+
+        {continueOpen ? (
+          <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="选择存档继续">
+            <div className="modal">
+              <div className="modalHeader">
+                <div className="modalTitle">继续（选择存档）</div>
+                <button type="button" className="modalClose" onClick={() => setContinueOpen(false)}>
+                  关闭
+                </button>
+              </div>
+              <div className="modalBody">
+                {saves.length ? (
+                  <div className="savePickList">
+                    {saves.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        className="savePickItem"
+                        onClick={() => {
+                          setContinueOpen(false);
+                          startFromSeed(s.seed);
+                        }}
+                      >
+                        <div className="savePickName">{s.name}</div>
+                        <div className="savePickDesc">
+                          seed {s.seed} · {s.blindKind} {s.blindScore}/{s.blindTarget} · ¥{s.money}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="hint">暂无存档。先进入游戏，在“设置 → 存档槽”保存。</div>
+                )}
+              </div>
+            </div>
+            <button type="button" className="modalBackdrop" aria-label="关闭" onClick={() => setContinueOpen(false)} />
+          </div>
+        ) : null}
+
+        {rulesOpen ? (
+          <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="游戏规则介绍">
+            <div className="modal">
+              <div className="modalHeader">
+                <div className="modalTitle">游戏规则介绍</div>
+                <button type="button" className="modalClose" onClick={() => setRulesOpen(false)}>
+                  关闭
+                </button>
+              </div>
+              <div className="modalBody">
+                <div className="rulesList">
+                  <div className="rulesItem">
+                    <div className="rulesHead">基本流程</div>
+                    <div className="rulesText">发牌 → 选中 1–5 张 → 出牌结算 → 达到目标进商店 → 下一轮盲注。</div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">如何选牌</div>
+                    <div className="rulesText">点击手牌即可选中/取消选中，然后点“出牌 / 弃牌”。</div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">计分（当前版本）</div>
+                    <div className="rulesText">
+                      Chips 来自“参与计分的牌”的点数之和（A=11，J/Q/K/10=10），牌型不再提供基础 Chips；牌型只提供基础 Mult。
+                    </div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">小丑牌</div>
+                    <div className="rulesText">小丑牌会在结算时触发，改变 Chips 或 Mult。点击“小丑牌”区域可查看具体功能。</div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">商店</div>
+                    <div className="rulesText">达标后进入商店，可花金币购买小丑牌或刷新。已拥有的小丑不会重复出现。</div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">失败条件</div>
+                    <div className="rulesText">如果盲注阶段出牌次数用完，且本轮分数未达到目标，则判定失败。</div>
+                  </div>
+                  <div className="rulesItem">
+                    <div className="rulesHead">继续游戏</div>
+                    <div className="rulesText">在“设置 → 存档槽”保存 seed 后，可在首页点“继续”选择存档继续（当前为 seed 复现）。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" className="modalBackdrop" aria-label="关闭" onClick={() => setRulesOpen(false)} />
+          </div>
+        ) : null}
+
+        {toast ? (
+          <div
+            style={{
+              position: 'fixed',
+              left: '50%',
+              bottom: 18,
+              transform: 'translateX(-50%)',
+              background: 'rgba(0,0,0,0.72)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              color: 'rgba(255,255,255,0.92)',
+              padding: '10px 12px',
+              borderRadius: 12,
+              fontSize: 13,
+              zIndex: 999,
+              maxWidth: '92vw',
+            }}
+            role="status"
+          >
+            {toast}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -215,6 +393,9 @@ export default function App() {
           <div className="sub">手机端手感优先：扇形手牌 + 点选/拖拽骨架</div>
         </div>
         <div className="pillRow">
+          <button type="button" className="pill" onClick={() => setView('home')}>
+            首页
+          </button>
           <button type="button" className="pill" onClick={() => setSettingsOpen(true)}>
             设置
           </button>
@@ -271,7 +452,8 @@ export default function App() {
           <div className="zoneTitle">
             <h2>计分区</h2>
             <div className="hint">
-              本轮 {store.state.blind.scoreSoFar} / {store.state.blind.targetScore} · 总分 {store.state.runScoreTotal}
+              本轮 <span className="roundScore">{store.state.blind.scoreSoFar}</span> / {store.state.blind.targetScore} · 总分{' '}
+              {store.state.runScoreTotal}
             </div>
           </div>
           {breakdown ? (
@@ -282,10 +464,9 @@ export default function App() {
             </div>
           ) : (
             <div className="hint" style={{ marginTop: 6 }}>
-              选中 1–5 张牌后，会显示基础 Chips/Mult 与结算结果
+              base____ * Mult____ = _______
             </div>
           )}
-          <JokerRow jokers={jokers} logs={breakdown?.logs ?? []} maxSlots={5} compact />
           {store.state.lastScoreText ? (
             <div className="hint" style={{ marginTop: 6 }}>
               本次：{store.state.lastScoreText}
@@ -295,6 +476,14 @@ export default function App() {
           <div className="hint" style={{ marginTop: 6 }}>
             本轮：出牌 {store.state.handsLeft} · 弃牌 {store.state.discardsLeft} · 金币 {store.state.money} · 选中 {selectedCards.length}/5
           </div>
+        </section>
+
+        <section className="panel">
+          <div className="zoneTitle">
+            <h2>小丑牌</h2>
+            <div className="hint">点击查看功能说明</div>
+          </div>
+          <JokerRow jokers={jokers} logs={breakdown?.logs ?? []} maxSlots={5} compact />
         </section>
 
         <section className="panel handArea" aria-label="手牌区域">
@@ -361,21 +550,52 @@ export default function App() {
           </div>
         </section>
       </main>
+
+      {isGameOver ? (
+        <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="游戏失败">
+          <div className="modal">
+            <div className="modalHeader">
+              <div className="modalTitle">游戏失败</div>
+              <button type="button" className="modalClose" onClick={() => setView('home')}>
+                退出
+              </button>
+            </div>
+            <div className="modalBody">
+              <div className="hint">
+                出牌次数已用尽，且未达到盲注目标（{store.state.blind.scoreSoFar}/{store.state.blind.targetScore}）。
+              </div>
+              <div className="modalActions">
+                <button
+                  type="button"
+                  className="btn btnPrimary"
+                  onClick={() => {
+                    startNewGame();
+                  }}
+                >
+                  重新开始游戏
+                </button>
+                <button type="button" className="btn" onClick={() => setView('home')}>
+                  退出游戏
+                </button>
+              </div>
+            </div>
+          </div>
+          <button type="button" className="modalBackdrop" aria-label="关闭" onClick={() => setView('home')} />
+        </div>
+      ) : null}
+
       <SettingsSheet
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         store={store}
         onRestart={() => {
-          const seed = (Date.now() >>> 0) ^ (store.state.seed * 2654435761);
-          setStore(newRun(seed));
-          setDealTick((t) => t + 1);
+          startNewGame();
           setSettingsOpen(false);
         }}
         settings={settings}
         onChangeSettings={setSettings}
         onLoadSeed={(seed) => {
-          setStore(newRun(seed));
-          setDealTick((t) => t + 1);
+          startFromSeed(seed);
           setSettingsOpen(false);
         }}
       />
